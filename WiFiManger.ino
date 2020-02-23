@@ -76,7 +76,7 @@ if (SPIFFS.exists("/config.json")) {
   wifiManager.addParameter(&customMqttDeviceType);
 
   //reset settings - for testing
-  wifiManager.resetSettings();
+  //wifiManager.resetSettings();
 
   wifiManager.autoConnect("AutoConnectAP");// use ESP Chip ID
   //if you get here you have connected to the WiFi
