@@ -62,6 +62,7 @@ if (SPIFFS.exists("/config.json")) {
   WiFiManagerParameter customMqttDeviceType("DeviceType", "device type", mqttDeviceType, 12);  
   
   WiFiManager wifiManager;      //Initialize the WiFi Manager
+  wifiManager.setTimeout(600);  // If not configured in 10min reset ESP. Usefull after Powercut
 
   //set config save notify callback
   wifiManager.setSaveConfigCallback(saveConfigCallback);
@@ -78,7 +79,7 @@ if (SPIFFS.exists("/config.json")) {
   //reset settings - for testing
   //wifiManager.resetSettings();
 
-  wifiManager.autoConnect("AutoConnectAP");// use ESP Chip ID
+  wifiManager.autoConnect();// use ESP Chip ID
   //if you get here you have connected to the WiFi
   Serial.println("connected...yeey :)");
 

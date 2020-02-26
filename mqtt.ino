@@ -54,7 +54,7 @@ void onMqttConnect(bool sessionPresent) {
   }
 
   // // Listening on everything in topic light/space/room/
-  if(snprintf (topic, 299, "%s%s", topic, mqttRoomName) > 0){
+  if(snprintf (topic, 299, "%s%s/", topic, mqttRoomName) > 0){
     Serial.print("Subscribe to; ");
     Serial.println(topic);
     uint16_t packetIdSub = mqttClient.subscribe(topic, 2);
@@ -63,7 +63,7 @@ void onMqttConnect(bool sessionPresent) {
   }
 
   // // Listening on everything in topic light/space/room/nodename
-  if(snprintf (topic, 299, "%s%s", topic, mqttNodeName) > 0){
+  if(snprintf (topic, 299, "%s%s/", topic, mqttNodeName) > 0){
     Serial.print("Subscribe to; ");
     Serial.println(topic);
     uint16_t packetIdSub = mqttClient.subscribe(topic, 2);
