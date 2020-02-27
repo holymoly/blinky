@@ -70,8 +70,15 @@ void onMqttConnect(bool sessionPresent) {
     Serial.print("Subscribing at QoS 2, packetId: ");
     Serial.println(packetIdSub);
   }
+  
+  StaticJsonDocument<50> doc;
+  char jsonString[50];
 
-  mqttClient.publish(mqttNodeName, 0, true, "node connected");
+  doc["state"] = "node connected";
+  
+  serializeJson(doc, jsonString);
+
+  mqttClient.publish(mqttNodeName, 0, true, jsonString);
   Serial.println("Publishing at QoS 0");
 }
 
@@ -126,9 +133,9 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     }
 
     // check if type is req
-    if(strcmp(doc["type"].as<char *>(), "cmd") == 0){
+    if(strcmp(doc["type"].as<char *>(), "req") == 0){
       Serial.println("Request received");
-      
+ 
       parseMqttRequest(doc);
     }
   }

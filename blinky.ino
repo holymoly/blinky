@@ -47,7 +47,6 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Booting");
   
-<<<<<<< HEAD
   //### LED Setup ###
   pinMode(PIN, OUTPUT);
   for(int i = 0; i <= nBalls-1; i++){
@@ -63,9 +62,7 @@ void setup() {
     balls[i].gravitation = 10;
   }
   //##################
-    
-=======
->>>>>>> 6f7ccaf
+
   pinMode(2, OUTPUT);             // Initialize the LED_BUILTIN pin as an output
   digitalWrite(2, LOW);           // Turn the LED on by making the voltage LOW
 
