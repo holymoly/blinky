@@ -13,7 +13,7 @@ void mqttDebug(char *message, int qos){
     //build topic
     //todo build topic string ones and not on every debug message
     if(snprintf (topic, 299, "%s/space/%s/%s/debug/", mqttDeviceType, mqttRoomName, mqttNodeName) > 0){
-      Serial.print("Send debug message to; ");
+      Serial.print("Send debug message to: ");
       Serial.println(topic);
       mqttClient.publish(topic, qos, true, jsonString);
     }

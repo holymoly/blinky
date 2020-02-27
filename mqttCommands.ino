@@ -2,15 +2,17 @@
  * If mqtt packe was type command
  */
 void parseMqttCommand(const JsonDocument& message){
-
   serializeJson(message, Serial);
 
+  // check if WiFI should be reseted
   if(strcmp(message["cmd"].as<char *>(), "wifiReset") == 0){
+    Serial.println("Received message WiFi reset");
     mqttCmdWiFiReset();
   }
 
+  // check if debug should be switched on/off
   if(strcmp(message["cmd"].as<char *>(), "debug") == 0){
-    Serial.println("Received debug mode message");
+    Serial.println("Received message debug mode ");
     mqttCmdDebug(message);
   }
 }

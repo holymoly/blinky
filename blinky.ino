@@ -27,14 +27,14 @@ long triggerTime;
 
 bool ledState = false;
 
-bool mqttDebugActive = true; //debug over mqtt
+bool mqttDebugActive = true;      //debug over mqtt
 
 void setup() {
   Serial.begin(115200);
   Serial.println("Booting");
   
-  pinMode(2, OUTPUT);     // Initialize the LED_BUILTIN pin as an output
-  digitalWrite(2, LOW);   // Turn the LED on by making the voltage LOW
+  pinMode(2, OUTPUT);             // Initialize the LED_BUILTIN pin as an output
+  digitalWrite(2, LOW);           // Turn the LED on by making the voltage LOW
 
   //clean FS, for testing
   //SPIFFS.format();

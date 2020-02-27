@@ -123,13 +123,13 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
       Serial.println("Command received");
       
       parseMqttCommand(doc);
-      // switch mode
-      /*
-      if(strcmp(doc["data"].as<char *>(), "manual") == 0){
-        Serial.println("Set LEDs to MANUAL");
-        activeProgram = MANUAL;
-      }
-      */
+    }
+
+    // check if type is req
+    if(strcmp(doc["type"].as<char *>(), "cmd") == 0){
+      Serial.println("Request received");
+      
+      parseMqttRequest(doc);
     }
   }
   
