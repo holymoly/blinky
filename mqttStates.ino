@@ -29,7 +29,7 @@ void mqttLwt(char* topic, int qos){
   lastWill["type"] = "state";
   lastWill["state"] = "lwt"; // type last will
   lastWill["message"] = "Ungracefully dicsconeected";
-  
+   
   serializeJson(lastWill, lastWillJsonString);
   
   Serial.print("Set Last WIll Testament on topic: ");
