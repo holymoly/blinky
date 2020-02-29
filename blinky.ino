@@ -16,7 +16,7 @@
 #include <SyncClient.h>
 #include <Ticker.h>
 
-// needed to upload sketches ovet the air
+// needed to upload sketches over the air
 #include <ArduinoOTA.h>
 #include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
 
@@ -33,9 +33,7 @@
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 Balls balls[nBalls];
 
-
 AsyncMqttClient mqttClient;
-Ticker mqttReconnectTimer;
 
 long triggerTime;
 
@@ -96,7 +94,7 @@ void loop() {
   if(triggerTime < millis()){
     digitalWrite(2, LOW);
     triggerTime = millis() + 1000;
-    mqttDebug("döner",0);
+    mqttDebug("peter du lappen",0);
   } else {
     digitalWrite(2, HIGH);
   }

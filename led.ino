@@ -3,10 +3,10 @@
 typedef enum {
   MANUAL, 
   BALL,
-  FIRE
+  BLINK
   } ledProgram_type;
 
-ledProgram_type activeProgram = FIRE;
+ledProgram_type activeProgram = BLINK;
 
 // initial colors
 int red = 500;
@@ -44,7 +44,7 @@ void setLeds(){
         }
       }
       break;
-    case FIRE:
+    case BLINK:
       {
         //  Uncomment one of these RGB (Red, Green, Blue) values to
         //  set the base color of the flame.  The color will flickr

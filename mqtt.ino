@@ -2,6 +2,7 @@ WiFiEventHandler wifiConnectHandler;
 WiFiEventHandler wifiDisconnectHandler;
 
 Ticker wifiReconnectTimer;
+Ticker mqttReconnectTimer;
 
 void connectToWifi() {
   Serial.println("Connecting to Wi-Fi...");
@@ -20,16 +21,14 @@ void onWifiDisconnect(const WiFiEventStationModeDisconnected& event) {
 }
 
 void connectToMqtt() {
-  Serial.println("Connecting to MQTT...");
-  mqttClient.connect();
+  if(!mqttClient.connected()){
+    Serial.println("Connecting to MQTT...");
+    mqttClient.connect();
+  }
 }
 
 void onMqttConnect(bool sessionPresent) {
   char topic[300]; // buffer for storing topics
-  //uint32_t chipid=ESP.getChipId();
-  //char nodeTopic[12];
-  // publishing on topic nodes/ESP.getChipId()
-  //snprintf(nodeTopic,13,"nodes/%06X",chipid);
   
   Serial.println("Connected to MQTT.");
   Serial.print("Session present: ");
@@ -69,6 +68,10 @@ void onMqttConnect(bool sessionPresent) {
     uint16_t packetIdSub = mqttClient.subscribe(topic, 2);
     Serial.print("Subscribing at QoS 2, packetId: ");
     Serial.println(packetIdSub);
+
+    // set last will testatment
+    // this message will be send by the broker if the node has disconnected ungracefully
+    mqttLwt(topic, 2);
   }
   
   StaticJsonDocument<50> doc;
@@ -86,7 +89,7 @@ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
   Serial.println("Disconnected from MQTT.");
 
   if (WiFi.isConnected()) {
-    mqttReconnectTimer.once(2, connectToMqtt);
+    mqttReconnectTimer.attach(2, connectToMqtt);
   }
 }
 
