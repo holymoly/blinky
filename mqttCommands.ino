@@ -91,6 +91,11 @@ void switchLedProgram(const JsonDocument& message){
    if(strcmp(message["value"], "RAINBOW") == 0){
     Serial.println("Led program switch to RAINBOW");
     activeProgram = RAINBOW;
+     speed = message["speed"];
+  } 
+   if(strcmp(message["value"], "RAINBOW") == 0){
+    Serial.println("Led program switch to RAINBOW");
+    activeProgram = CHASE;
   } 
   if(strcmp(message["value"], "MANUAL") == 0){
     Serial.println("Led program switch to MANUAL");

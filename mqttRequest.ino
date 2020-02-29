@@ -54,11 +54,18 @@ void mqttReqWtf(const JsonDocument& message){
   wtf_01["green"] = "125";
   wtf_01["blue"] = "125";
   wtf_01["Speed"] = "50";
-  
+
   JsonObject wtf_02 = wtf.createNestedObject();
   wtf_02["type"] = "cmd";
   wtf_02["cmd"] = "setProgram";
   wtf_02["value"] = "RAINBOW";
+  wtf_02["Speed"] = "50";
+  
+  JsonObject wtf_03 = wtf.createNestedObject();
+  wtf_02["type"] = "cmd";
+  wtf_02["cmd"] = "setProgram";
+  wtf_02["value"] = "CHASE";
+  wtf_01["Speed"] = "50";
 
   JsonObject wtf_1 = wtf.createNestedObject();
   wtf_0["type"] = "cmd";
