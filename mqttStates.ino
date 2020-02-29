@@ -19,3 +19,20 @@ void mqttDebug(char *message, int qos){
     }
   }
 }
+
+// Setting Last Will Testament
+void mqttLwt(char* topic, int qos){
+  StaticJsonDocument<300> lastWill;
+  char lastWillJsonString[300];
+
+  lastWill["node"] = mqttNodeName;
+  lastWill["type"] = "state";
+  lastWill["state"] = "lwt"; // type last will
+  lastWill["message"] = "Ungracefully dicsconeected";
+   
+  serializeJson(lastWill, lastWillJsonString);
+  
+  Serial.print("Set Last WIll Testament on topic: ");
+  Serial.println(topic);
+  mqttClient.setWill(topic, qos, true, lastWillJsonString);
+}

@@ -1,5 +1,5 @@
 // mqtt Server default values
-char mqttServer[40] = "10.10.10.10";
+char mqttServer[50] = "10.10.10.10";
 char mqttPort[6] = "1883";
 char mqttUser[40] = "guest";
 char mqttPassword[40] = "guest";
