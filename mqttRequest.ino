@@ -41,10 +41,19 @@ void mqttReqWtf(const JsonDocument& message){
 
   JsonArray wtf = doc.createNestedArray("wtf");
 
+  
   JsonObject wtf_0 = wtf.createNestedObject();
   wtf_0["type"] = "cmd";
   wtf_0["cmd"] = "setProgram";
   wtf_0["value"] = "BALL";
+  JsonObject wtf_01 = wtf.createNestedObject();
+  wtf_01["type"] = "cmd";
+  wtf_01["cmd"] = "setProgram";
+  wtf_01["value"] = "FIRE";
+  JsonObject wtf_02 = wtf.createNestedObject();
+  wtf_02["type"] = "cmd";
+  wtf_02["cmd"] = "setProgram";
+  wtf_02["value"] = "RAINBOW";
 
   JsonObject wtf_1 = wtf.createNestedObject();
   wtf_1["type"] = "cmd";

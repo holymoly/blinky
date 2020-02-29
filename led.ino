@@ -3,7 +3,8 @@
 typedef enum {
   MANUAL, 
   BALL,
-  FIRE
+  FIRE,
+  RAINBOW,
   } ledProgram_type;
 
 ledProgram_type activeProgram = FIRE;
@@ -14,6 +15,15 @@ int green = 50;
 int blue = 50;
 
 long starTime;
+
+static void chase(uint32_t c) {
+  for(uint16_t i=0; i<pixels.numPixels()+4; i++) {
+    pixels.setPixelColor(i  , c); // Draw new pixel
+    pixels.setPixelColor(i-4, 0); // Erase pixel a few steps back
+    pixels.show();
+    delay(50);
+  }
+}
 
 void setLeds(){
   switch (activeProgram) {
@@ -44,6 +54,12 @@ void setLeds(){
         }
       }
       break;
+      case RAINBOW:
+       chase(pixels.Color(255, 0, 0)); // Red
+       chase(pixels.Color(0, 255, 0)); // Green
+       chase(pixels.Color(0, 0, 255)); // Blue
+      
+    break;
     case FIRE:
       {
         //  Uncomment one of these RGB (Red, Green, Blue) values to
