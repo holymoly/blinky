@@ -36,18 +36,15 @@ Click Save and the Node will restart and should connect to the configured MQTT S
 All commands and responses are json encoded. Possible commands are:
 
 - Reset Wifi
-
 ```javascript
 {
 type: "cmd",
 cmd: "wifiReset"
 }
 ```
-
 Resets the WiFi config on the Node and starts the Configuration Web Portal.
 
 - Debug mode
-
 ```javascript
 {
 type: "cmd",
@@ -55,11 +52,9 @@ cmd: "debug",
 value: "on"
 }
 ```
-
 Activates debug messages over mqtt. Value can be on or off.
 
 - Activate Ball Led Animation
-
 ```javascript
 {
 type: "cmd",
@@ -69,7 +64,6 @@ value: "BALL"
 ```
 
 - Activate Blink Led Animation
-
 ```javascript
 {
 type: "cmd",
@@ -79,7 +73,6 @@ value: "BLINK"
 ```
 
 - Activate a specific color
-
 ```javascript
 {
 type: "cmd",
@@ -90,5 +83,15 @@ green: "125",
 blue: "50"
 }
 ```
-
 Red,green and blue can be values between 0 and 255
+
+- Activate Blink Led Animation
+```javascript
+{
+type: "req",
+req: "wtf",
+uid: "1234"
+}
+```
+Returns a respons with messages that can be send to the device.
+
