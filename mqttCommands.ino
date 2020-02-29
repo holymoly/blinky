@@ -80,6 +80,14 @@ void switchLedProgram(const JsonDocument& message){
     Serial.println("Led program switch to FIRE");
     activeProgram = FIRE;
   }
+  if(strcmp(message["value"], "LAUFLICHT") == 0){
+    Serial.println("Led program switch to LAUFLICHT");
+    activeProgram = LAUFLICHT;
+    red = message["red"];
+    green = message["green"];
+    blue = message["blue"];
+    speed = message["speed"];
+  }
    if(strcmp(message["value"], "RAINBOW") == 0){
     Serial.println("Led program switch to RAINBOW");
     activeProgram = RAINBOW;

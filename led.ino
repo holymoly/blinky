@@ -3,7 +3,7 @@
 typedef enum {
   MANUAL, 
   BALL,
-  FIRE,
+  LAUFLICHT,
   RAINBOW,
   BLINK
   } ledProgram_type;
@@ -14,6 +14,7 @@ ledProgram_type activeProgram = BLINK;
 int red = 500;
 int green = 50;
 int blue = 50;
+int speed = 50;
 
 long starTime;
 
@@ -23,6 +24,13 @@ static void chase(uint32_t c) {
     pixels.setPixelColor(i-4, 0); // Erase pixel a few steps back
     pixels.show();
     delay(50);
+  }
+}
+void colorWipe(int red, int green, int blue, int SpeedDelay) {
+  for(uint16_t i=0; i<<pixels.numPixels(); i++) {
+      pixels.setPixelColor(i, red, green, blue);
+      pixels.show();
+      delay(SpeedDelay);
   }
 }
 
@@ -61,7 +69,8 @@ void setLeds(){
        chase(pixels.Color(0, 0, 255)); // Blue
       
     break;
-    case FIRE:
+    case LAUFLICHT:
+    colorWipe(red,green,blue,speed);
     break;
     case BLINK:
       {
