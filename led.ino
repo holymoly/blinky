@@ -3,6 +3,8 @@
 typedef enum {
   MANUAL, 
   BALL,
+  LAUFLICHT,
+  RAINBOW,
   BLINK
   } ledProgram_type;
 
@@ -12,8 +14,60 @@ ledProgram_type activeProgram = BLINK;
 int red = 500;
 int green = 50;
 int blue = 50;
+int speed = 50;
 
 long starTime;
+
+static void chase(uint32_t c) {
+  for(uint16_t i=0; i<pixels.numPixels()+4; i++) {
+    pixels.setPixelColor(i  , c); // Draw new pixel
+    pixels.setPixelColor(i-4, 0); // Erase pixel a few steps back
+    pixels.show();
+    delay(50);
+  }
+}
+void colorWipe(int red, int green, int blue, int SpeedDelay) {
+  for(uint16_t i=0; i< pixels.numPixels(); i++) {
+      pixels.setPixelColor(i, red, green, blue);
+      pixels.show();
+      delay(SpeedDelay);
+  }
+}
+void rainbowCycle(int SpeedDelay) {
+  byte *c;
+  uint16_t i, j;
+
+  for(j=0; j<256*5; j++) { // 5 cycles of all colors on wheel
+    for(i=0; i< pixels.numPixels(); i++) {
+      c=Wheel(((i * 256 / NUM_LEDS) + j) & 255);
+       pixels.setPixelColor(i, *c, *(c+1), *(c+2));
+    }
+     pixels.show();
+    delay(SpeedDelay);
+  }
+}
+
+byte * Wheel(byte WheelPos) {
+  static byte c[3];
+ 
+  if(WheelPos < 85) {
+   c[0]=WheelPos * 3;
+   c[1]=255 - WheelPos * 3;
+   c[2]=0;
+  } else if(WheelPos < 170) {
+   WheelPos -= 85;
+   c[0]=255 - WheelPos * 3;
+   c[1]=0;
+   c[2]=WheelPos * 3;
+  } else {
+   WheelPos -= 170;
+   c[0]=0;
+   c[1]=WheelPos * 3;
+   c[2]=255 - WheelPos * 3;
+  }
+
+  return c;
+}
 
 void setLeds(){
   switch (activeProgram) {
@@ -44,6 +98,18 @@ void setLeds(){
         }
       }
       break;
+      case CHASE:
+       chase(pixels.Color(255, 0, 0)); // Red
+       chase(pixels.Color(0, 255, 0)); // Green
+       chase(pixels.Color(0, 0, 255)); // Blue
+      
+    break;
+    case RAINBOW:
+      rainbowCycle(speed);
+    break;
+    case LAUFLICHT:
+    colorWipe(red,green,blue,speed);
+    break;
     case BLINK:
       {
         //  Uncomment one of these RGB (Red, Green, Blue) values to
