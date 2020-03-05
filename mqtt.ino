@@ -42,7 +42,7 @@ void onMqttConnect(bool sessionPresent) {
     Serial.print("Subscribing at QoS 2, packetId: ");
     Serial.println(packetIdSub);
   }
-
+  delay(20);
   // Listening on everything in topic light/space/
   if(snprintf (topic, 299, "%sspace/", topic) > 0){
     Serial.print("Subscribe to; ");
@@ -51,7 +51,7 @@ void onMqttConnect(bool sessionPresent) {
     Serial.print("Subscribing at QoS 2, packetId: ");
     Serial.println(packetIdSub);
   }
-
+  delay(20);
   // // Listening on everything in topic light/space/room/
   if(snprintf (topic, 299, "%s%s/", topic, mqttRoomName) > 0){
     Serial.print("Subscribe to; ");
@@ -60,7 +60,7 @@ void onMqttConnect(bool sessionPresent) {
     Serial.print("Subscribing at QoS 2, packetId: ");
     Serial.println(packetIdSub);
   }
-
+  delay(20);
   // // Listening on everything in topic light/space/room/nodename
   if(snprintf (topic, 299, "%s%s/", topic, mqttNodeName) > 0){
     Serial.print("Subscribe to; ");
@@ -71,9 +71,9 @@ void onMqttConnect(bool sessionPresent) {
 
     // set last will testatment
     // this message will be send by the broker if the node has disconnected ungracefully
-    mqttLwt(topic, 2);
+    //mqttLwt(topic, 2);
   }
-  
+  delay(20);
   StaticJsonDocument<50> doc;
   char jsonString[50];
 
@@ -89,7 +89,7 @@ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
   Serial.println("Disconnected from MQTT.");
 
   if (WiFi.isConnected()) {
-    mqttReconnectTimer.attach(2, connectToMqtt);
+    mqttReconnectTimer.once(2, connectToMqtt);
   }
 }
 
@@ -171,16 +171,12 @@ void onMqttPublish(uint16_t packetId) {
 void mqttInit(){
   uint16_t port;
   
-  uint32_t chipid=ESP.getChipId();
-  char clientID[6];
-  // publishing on topic nodes/ESP.getChipId()
-  snprintf(clientID,7,"%06X",chipid);
-  
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
   wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
-  mqttClient.setClientId(clientID);
+  
+  //mqttClient.setClientId("clientID");
   mqttClient.setCredentials(mqttUser,mqttPassword);
-  mqttClient.setCleanSession(true);
+  mqttClient.setCleanSession(false);
   mqttClient.onConnect(onMqttConnect);
   mqttClient.onDisconnect(onMqttDisconnect);
   mqttClient.onSubscribe(onMqttSubscribe);

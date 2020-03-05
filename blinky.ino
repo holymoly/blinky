@@ -28,9 +28,9 @@
 //#################
 #include "Balls.h"
 #define PIN D1                    // PIN the LED Stripe is connected to
-#define NUMPIXELS 150             // Amount of LEDs
 #define nBalls 3                  // number of balls for balls program
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+int NUMPIXELS = 150;              // Amount of LEDs
+Adafruit_NeoPixel pixels;         // cannot be initialized until parameters are loaded by WiFiManager
 Balls balls[nBalls];
 
 AsyncMqttClient mqttClient;
@@ -45,6 +45,24 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Booting");
   
+  pinMode(2, OUTPUT);             // Initialize the LED_BUILTIN pin as an output
+  digitalWrite(2, LOW);           // Turn the LED on by making the voltage LOW
+
+  //clean FS, for testing
+  //SPIFFS.format();
+
+  if (SPIFFS.begin()) {
+    Serial.println("mounted file system");
+  } else {
+    Serial.println("failed to mount FS");
+  }
+
+  // Start WiFi
+  WiFIManagerInit();
+
+  // Needs to be initialized after WiFi as WiFiManager Loads NUMPIXELS paramter from FS
+  pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
   //### LED Setup ###
   pinMode(PIN, OUTPUT);
   for(int i = 0; i <= nBalls-1; i++){
@@ -60,21 +78,6 @@ void setup() {
     balls[i].gravitation = 10;
   }
   //##################
-
-  pinMode(2, OUTPUT);             // Initialize the LED_BUILTIN pin as an output
-  digitalWrite(2, LOW);           // Turn the LED on by making the voltage LOW
-
-  //clean FS, for testing
-  //SPIFFS.format();
-
-  if (SPIFFS.begin()) {
-    Serial.println("mounted file system");
-  } else {
-    Serial.println("failed to mount FS");
-  }
-
-  // Start WiFi
-  WiFIManagerInit();
 
   // Start mqtt
   mqttInit();
@@ -94,7 +97,7 @@ void loop() {
   if(triggerTime < millis()){
     digitalWrite(2, LOW);
     triggerTime = millis() + 1000;
-    mqttDebug("peter du lappen",0);
+    mqttDebug("Lappen aler Länder vereinigt euch",0);
   } else {
     digitalWrite(2, HIGH);
   }
