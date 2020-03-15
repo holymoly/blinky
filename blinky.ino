@@ -28,7 +28,7 @@
 //#################
 #include "Balls.h"
 #define PIN D1                    // PIN the LED Stripe is connected to
-#define NUMPIXELS 150             // Amount of LEDs
+#define NUMPIXELS 27             // Amount of LEDs
 #define nBalls 3                  // number of balls for balls program
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 Balls balls[nBalls];
