@@ -2,6 +2,7 @@ WiFiEventHandler wifiConnectHandler;
 WiFiEventHandler wifiDisconnectHandler;
 
 Ticker wifiReconnectTimer;
+Ticker mqttReconnectTimer;
 
 void connectToWifi() {
   Serial.println("Connecting to Wi-Fi...");
@@ -20,16 +21,14 @@ void onWifiDisconnect(const WiFiEventStationModeDisconnected& event) {
 }
 
 void connectToMqtt() {
-  Serial.println("Connecting to MQTT...");
-  mqttClient.connect();
+  if(!mqttClient.connected()){
+    Serial.println("Connecting to MQTT...");
+    mqttClient.connect();
+  }
 }
 
 void onMqttConnect(bool sessionPresent) {
   char topic[300]; // buffer for storing topics
-  //uint32_t chipid=ESP.getChipId();
-  //char nodeTopic[12];
-  // publishing on topic nodes/ESP.getChipId()
-  //snprintf(nodeTopic,13,"nodes/%06X",chipid);
   
   Serial.println("Connected to MQTT.");
   Serial.print("Session present: ");
@@ -54,7 +53,7 @@ void onMqttConnect(bool sessionPresent) {
   }
 
   // // Listening on everything in topic light/space/room/
-  if(snprintf (topic, 299, "%s%s", topic, mqttRoomName) > 0){
+  if(snprintf (topic, 299, "%s%s/", topic, mqttRoomName) > 0){
     Serial.print("Subscribe to; ");
     Serial.println(topic);
     uint16_t packetIdSub = mqttClient.subscribe(topic, 2);
@@ -63,15 +62,26 @@ void onMqttConnect(bool sessionPresent) {
   }
 
   // // Listening on everything in topic light/space/room/nodename
-  if(snprintf (topic, 299, "%s%s", topic, mqttNodeName) > 0){
+  if(snprintf (topic, 299, "%s%s/", topic, mqttNodeName) > 0){
     Serial.print("Subscribe to; ");
     Serial.println(topic);
     uint16_t packetIdSub = mqttClient.subscribe(topic, 2);
     Serial.print("Subscribing at QoS 2, packetId: ");
     Serial.println(packetIdSub);
-  }
 
-  mqttClient.publish(mqttNodeName, 0, true, "node connected");
+    // set last will testatment
+    // this message will be send by the broker if the node has disconnected ungracefully
+    mqttLwt(topic, 2);
+  }
+  
+  StaticJsonDocument<50> doc;
+  char jsonString[50];
+
+  doc["state"] = "node connected";
+  
+  serializeJson(doc, jsonString);
+
+  mqttClient.publish(mqttNodeName, 0, true, jsonString);
   Serial.println("Publishing at QoS 0");
 }
 
@@ -79,7 +89,7 @@ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
   Serial.println("Disconnected from MQTT.");
 
   if (WiFi.isConnected()) {
-    mqttReconnectTimer.once(2, connectToMqtt);
+    mqttReconnectTimer.attach(2, connectToMqtt);
   }
 }
 
@@ -126,9 +136,9 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     }
 
     // check if type is req
-    if(strcmp(doc["type"].as<char *>(), "cmd") == 0){
+    if(strcmp(doc["type"].as<char *>(), "req") == 0){
       Serial.println("Request received");
-      
+ 
       parseMqttRequest(doc);
     }
   }

@@ -3,7 +3,7 @@ void otaInit(){
   // ArduinoOTA.setPort(8266);
 
   // Hostname defaults to esp8266-[ChipID]
-  ArduinoOTA.setHostname("baled");
+  //ArduinoOTA.setHostname("baled");
 
   // No authentication by default
   ArduinoOTA.setPassword((const char *)"baled");
