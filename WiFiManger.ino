@@ -6,7 +6,6 @@ char mqttPassword[40] = "guest";
 char mqttNodeName[12] = "nodename";
 char mqttRoomName[12] = "room";
 char mqttDeviceType[12] = "devicetype";
-char mqttLedAmount[12] = "150";
 
 //flag for saving data
 bool shouldSaveConfig = false;
@@ -20,40 +19,36 @@ void saveConfigCallback () {
 void WiFIManagerInit(){
 delay(200);
 if (SPIFFS.exists("/config.json")) {
-  //file exists, reading and loading
-  Serial.println("reading config file");
-  File configFile = SPIFFS.open("/config.json", "r");
-  if (configFile) {
-    Serial.println("opened config file");
-    size_t size = configFile.size();
-    // Allocate a buffer to store contents of the file.
-    std::unique_ptr<char[]> buf(new char[size]);
+    //file exists, reading and loading
+    Serial.println("reading config file");
+    File configFile = SPIFFS.open("/config.json", "r");
+    if (configFile) {
+      Serial.println("opened config file");
+      size_t size = configFile.size();
+      // Allocate a buffer to store contents of the file.
+      std::unique_ptr<char[]> buf(new char[size]);
 
-    configFile.readBytes(buf.get(), size);
-    DynamicJsonDocument json(1024);
-    //JsonObject json = jsonBuffer.parseObject(buf.get());
-    auto error = deserializeJson(json, buf.get());
-    serializeJson(json, Serial);
-    if (!error) {
-      Serial.println("\nparsed json");
+      configFile.readBytes(buf.get(), size);
+      DynamicJsonDocument json(1024);
+      //JsonObject json = jsonBuffer.parseObject(buf.get());
+      auto error = deserializeJson(json, buf.get());
+      serializeJson(json, Serial);
+      if (!error) {
+        Serial.println("\nparsed json");
 
-      strcpy(mqttServer, json["mqttServer"]);
-      strcpy(mqttPort, json["mqttPort"]);
-      strcpy(mqttUser, json["mqttUser"]);
-      strcpy(mqttPassword, json["mqttPassword"]);
-      strcpy(mqttNodeName, json["mqttNodeName"]);
-      strcpy(mqttRoomName, json["mqttRoomName"]);
-      strcpy(mqttDeviceType, json["mqttDeviceType"]);
-      strcpy(mqttLedAmount, json["mqttLedAmount"]);
-      
-      // Set amount of leds based on WiFi Manager custom parameter
-      NUMPIXELS = atoi(mqttLedAmount);
-    } else {
-      Serial.println("failed to load json config");
+        strcpy(mqttServer, json["mqttServer"]);
+        strcpy(mqttPort, json["mqttPort"]);
+        strcpy(mqttUser, json["mqttUser"]);
+        strcpy(mqttPassword, json["mqttPassword"]);
+        strcpy(mqttNodeName, json["mqttNodeName"]);
+        strcpy(mqttRoomName, json["mqttRoomName"]);
+        strcpy(mqttDeviceType, json["mqttDeviceType"]);
+      } else {
+        Serial.println("failed to load json config");
+      }
+      configFile.close();
     }
-    configFile.close();
   }
-}
 
   // The extra parameters to be configured (can be either global or just in the setup)
   // After connecting, parameter.getValue() will get you the configured value
@@ -64,8 +59,7 @@ if (SPIFFS.exists("/config.json")) {
   WiFiManagerParameter customMqttPassword("Password", "mqtt pasword", mqttPassword, 40);
   WiFiManagerParameter customMqttNodeName("NodeName", "node name", mqttNodeName, 12);  
   WiFiManagerParameter customMqttRoomName("RoomName", "room name", mqttRoomName, 12);  
-  WiFiManagerParameter customMqttDeviceType("DeviceType", "device type", mqttDeviceType, 12);
-  WiFiManagerParameter customMqttLedAmount("LedAmount", "amount of leds ", mqttLedAmount, 12);  
+  WiFiManagerParameter customMqttDeviceType("DeviceType", "device type", mqttDeviceType, 12);  
   
   WiFiManager wifiManager;      //Initialize the WiFi Manager
   wifiManager.setTimeout(600);  // If not configured in 10min reset ESP. Usefull after Powercut
@@ -81,7 +75,6 @@ if (SPIFFS.exists("/config.json")) {
   wifiManager.addParameter(&customMqttNodeName);
   wifiManager.addParameter(&customMqttRoomName);
   wifiManager.addParameter(&customMqttDeviceType);
-  wifiManager.addParameter(&customMqttLedAmount);
 
   //reset settings - for testing
   //wifiManager.resetSettings();
@@ -98,7 +91,6 @@ if (SPIFFS.exists("/config.json")) {
   strcpy(mqttNodeName, customMqttNodeName.getValue());
   strcpy(mqttRoomName, customMqttRoomName.getValue());
   strcpy(mqttDeviceType, customMqttDeviceType.getValue());
-  strcpy(mqttLedAmount, customMqttLedAmount.getValue());
   
   //save the custom parameters to FS
   if (shouldSaveConfig) {
@@ -112,8 +104,6 @@ if (SPIFFS.exists("/config.json")) {
     json["mqttNodeName"] = mqttNodeName;
     json["mqttRoomName"] = mqttRoomName;
     json["mqttDeviceType"] = mqttDeviceType;
-    json["mqttLedAmount"] = mqttLedAmount;
-
 
     File configFile = SPIFFS.open("/config.json", "w");
     if (!configFile) {

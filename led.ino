@@ -14,7 +14,6 @@ int green = 50;
 int blue = 50;
 
 long starTime;
-long fadeTime;
 
 void setLeds(){
   switch (activeProgram) {
@@ -50,34 +49,31 @@ void setLeds(){
         //  Uncomment one of these RGB (Red, Green, Blue) values to
         //  set the base color of the flame.  The color will flickr
         //  based on the initial base color
-        if(fadeTime < millis()){
-          fadeTime= millis() + 100;
-          //dimm pixels
-          float fadeFactor = 0.999999;
-          for (int i=0; i < NUMPIXELS; i++){   
-            uint32_t curr_col = pixels.getPixelColor(i);
-            uint8_t curr_b = curr_col & 0xFF;
-            uint8_t curr_g = (curr_col >> 8) & 0xFF;
-            uint8_t curr_r = (curr_col >> 16) & 0xFF;  // separate into RGB component
-                       
-            pixels.setPixelColor(i, pixels.Color(curr_r*fadeFactor,curr_g*fadeFactor,curr_b*fadeFactor));
-          }
+        
+        //dimm pixels
+        float fadeFactor = 0.999;
+        for (int i=0; i < NUMPIXELS; i++){   
+          uint32_t curr_col = pixels.getPixelColor(i);
+          uint8_t curr_b = curr_col & 0xFF;
+          uint8_t curr_g = (curr_col >> 8) & 0xFF;
+          uint8_t curr_r = (curr_col >> 16) & 0xFF;  // separate into RGB component
+                     
+          pixels.setPixelColor(i, pixels.Color(curr_r*fadeFactor,curr_g*fadeFactor,curr_b*fadeFactor));
         }
         
         //  Regular (orange) flame:
-        //int r = 226, g = 121, b = 35;
-        int r = 60, g = 30, b = 10;
+        int r = 226, g = 121, b = 35;
       
         //  Purple flame:
-        //int r = 158, g = 8, b = 148;
+        //  int r = 158, g = 8, b = 148;
       
         //  Green flame:
         //int r = 74, g = 150, b = 12;
       
         //  Draw 10 stars
         if(starTime < millis()){
-          starTime = millis() + 200;
-          int flicker = random(0,25);
+          starTime = millis() + 100;
+          int flicker = random(0,55);
           int r1 = r-flicker;
           int g1 = g-flicker;
           int b1 = b-flicker;
