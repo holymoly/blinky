@@ -87,4 +87,8 @@ void switchLedProgram(const JsonDocument& message){
     Serial.println("Led program switch to BALL");
     activeProgram = BLINK;
   } 
+  if(strcmp(message["value"], "RAINBOW") == 0){
+    Serial.println("Led program switch to RAINBOW");
+    activeProgram = RAINBOW;
+  } 
 }
