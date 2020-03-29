@@ -28,7 +28,7 @@ void mqttReqWtf(const JsonDocument& message){
   // Just adjust  doc["device"] = mqttNodeName 
   //              doc["uid"]  = message["uid"];
 
-  const size_t capacity = JSON_ARRAY_SIZE(6) + 2*JSON_OBJECT_SIZE(2) + 3*JSON_OBJECT_SIZE(3) + 2*JSON_OBJECT_SIZE(6);
+  const size_t capacity = JSON_ARRAY_SIZE(8) + 2*JSON_OBJECT_SIZE(2) + 5*JSON_OBJECT_SIZE(3) + 2*JSON_OBJECT_SIZE(6);
   DynamicJsonDocument doc(capacity);
 
   char jsonString[capacity];
@@ -37,8 +37,9 @@ void mqttReqWtf(const JsonDocument& message){
 
   doc["type"] = "resp";
   doc["description"] = "You can use the message inside the wtf array for testing";
-  doc["device"] = mqttNodeName;  
-  doc["leds"] = NUMPIXELS; 
+  doc["device"] = mqttNodeName;
+  doc["room"] = mqttRoomName;
+  doc["leds"] = pixels.numPixels(); 
   doc["uid"] = message["uid"];
 
   JsonArray wtf = doc.createNestedArray("wtf");
@@ -73,6 +74,11 @@ void mqttReqWtf(const JsonDocument& message){
   JsonObject wtf_5 = wtf.createNestedObject();
   wtf_5["type"] = "cmd";
   wtf_5["cmd"] = "debug";
+
+  JsonObject wtf_6 = wtf.createNestedObject();
+  wtf_6["type"] = "cmd";
+  wtf_6["cmd"] = "setProgram";
+  wtf_6["value"] = "KIT";
 
   serializeJson(doc, jsonString);
 

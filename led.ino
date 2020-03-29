@@ -4,7 +4,8 @@ typedef enum {
   MANUAL, 
   BALL,
   BLINK,
-  RAINBOW
+  RAINBOW,
+  KIT
   } ledProgram_type;
 
 ledProgram_type activeProgram = RAINBOW;
@@ -23,7 +24,7 @@ void setLeds(){
     case MANUAL:
       {
         //Colors for rgb will be set from websocket
-        for (int i=0; i<NUMPIXELS; i++){              
+        for (int i=0; i < pixels.numPixels(); i++){              
           pixels.setPixelColor(i, pixels.Color(red,green,blue));
         }
       }
@@ -47,7 +48,7 @@ void setLeds(){
         //  based on the initial base color
         
         //dimm pixels
-        dimByFactorCycle(0.999, 5);
+        dimByFactorCycle(0.999, 11);
         
         //  Regular (orange) flame:
         int r = 226, g = 121, b = 35;
@@ -60,7 +61,7 @@ void setLeds(){
       
         //  Draw 10 stars
         if(cycleTime < millis()){
-          cycleTime = millis() + 100;
+          cycleTime = millis() + 30;
           int flicker = random(0,55);
           int r1 = r-flicker;
           int g1 = g-flicker;
@@ -77,17 +78,34 @@ void setLeds(){
       {
         if(cycleTime < millis()){
           cycleTime = millis() + 5;
-          for(int i=0; i< pixels.numPixels(); i++){
+          for(int i=0; i < pixels.numPixels(); i++){
             pixels.setPixelColor(i, Wheel(((i * 256 / pixels.numPixels()) + rainbowIndex) & 255));
           }
           rainbowIndex++;
         }
       }
       break;
+    // 
+    case KIT:
+      {
+        
+        int pos = balls[0].moveTimeBased();
+        balls[0].positionHoldPeriod = 30;
+         //dimm pixels
+        dimByFactorCycle(0, 0);
+
+        //pixels.setPixelColor(pos-2, pixels.Color(balls[0].red/4, balls[0].green/4, balls[0].blue/4));
+        pixels.setPixelColor(pos-1, pixels.Color(balls[0].red/10, balls[0].green/10, balls[0].blue/10));
+        pixels.setPixelColor(pos,   pixels.Color(balls[0].red,   balls[0].green,   balls[0].blue));
+        pixels.setPixelColor(pos+1, pixels.Color(balls[0].red/10, balls[0].green/10, balls[0].blue/10));
+        //pixels.setPixelColor(pos+2, pixels.Color(balls[0].red/4, balls[0].green/4, balls[0].blue/4));
+
+      }
+      break;
     default:
       {
         //Switch red if no mode was found
-        for (int i=0; i<NUMPIXELS; i++){              
+        for (int i=0; i < pixels.numPixels(); i++){              
           pixels.setPixelColor(i, pixels.Color(20,0,0));
         }
       }
@@ -95,13 +113,12 @@ void setLeds(){
 }
 
 long nextDimTime = millis(); //inits nextDimTime dimByFactorCycle will be executed on first call
-
 // dims all Leds by the factor if last dim was more than dimDiffTime ago
 void dimByFactorCycle(float fadeFactor, int dimDiffTime){
   if(nextDimTime < millis()){
     nextDimTime = millis() + dimDiffTime; // set next dim cycle
     
-    for (int i=0; i < NUMPIXELS; i++){   
+    for (int i=0; i < pixels.numPixels(); i++){   
       uint32_t curr_col = pixels.getPixelColor(i);
       uint8_t curr_b = curr_col & 0xFF;
       uint8_t curr_g = (curr_col >> 8) & 0xFF;

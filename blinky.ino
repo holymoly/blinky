@@ -53,8 +53,8 @@ void setup() {
     balls[i].green = random(0, 150);
     balls[i].blue = random(0, 150);
     balls[i].startPosition = 1;
-    balls[i].endPosition = NUMPIXELS;
-    balls[i].actPosition = random(1, NUMPIXELS);
+    balls[i].endPosition = pixels.numPixels();
+    balls[i].actPosition = random(1, pixels.numPixels());
     balls[i].direction = random(0, 1);
     balls[i].speed = random(3, 10);
     balls[i].gravitation = 10;
