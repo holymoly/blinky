@@ -1,5 +1,7 @@
-WiFiEventHandler wifiConnectHandler;
-WiFiEventHandler wifiDisconnectHandler;
+#ifdef ARDUINO_ARCH_ESP8266
+  WiFiEventHandler wifiConnectHandler;
+  WiFiEventHandler wifiDisconnectHandler;
+#endif
 
 Ticker wifiReconnectTimer;
 Ticker mqttReconnectTimer;
@@ -9,12 +11,20 @@ void connectToWifi() {
   WiFIManagerInit();
 }
 
-void onWifiConnect(const WiFiEventStationModeGotIP& event) {
+#ifdef ARDUINO_ARCH_ESP32
+  void onWifiConnect(WiFiEvent_t event, WiFiEventInfo_t info) {
+#elif defined(ARDUINO_ARCH_ESP8266)
+  void onWifiConnect(const WiFiEventStationModeGotIP& event) {
+#endif
   Serial.println("Connected to Wi-Fi.");
   connectToMqtt();
 }
 
-void onWifiDisconnect(const WiFiEventStationModeDisconnected& event) {
+#ifdef ARDUINO_ARCH_ESP32
+  void onWifiDisconnect(WiFiEvent_t event, WiFiEventInfo_t info) {
+#elif defined(ARDUINO_ARCH_ESP8266)
+  void onWifiDisconnect(const WiFiEventStationModeDisconnected& event) {
+#endif
   Serial.println("Disconnected from Wi-Fi.");
   mqttReconnectTimer.detach(); // ensure we don't reconnect to MQTT while reconnecting to Wi-Fi
   wifiReconnectTimer.once(2, connectToWifi);
@@ -171,10 +181,23 @@ void onMqttPublish(uint16_t packetId) {
 void mqttInit(){
   uint16_t port;
   
+#ifdef ARDUINO_ARCH_ESP32
+  uint32_t chipid=ESP.getEfuseMac();
+#elif defined(ARDUINO_ARCH_ESP8266)
+  uint32_t chipid=ESP.getChipId();
+#endif
+  char clientID[6];
+  // publishing on topic nodes/ESP.getChipId()
+  snprintf(clientID,7,"%06X",chipid);
+  
+#ifdef ARDUINO_ARCH_ESP32
+  WiFi.onEvent(onWifiConnect, SYSTEM_EVENT_STA_GOT_IP);
+  WiFi.onEvent(onWifiDisconnect, SYSTEM_EVENT_STA_DISCONNECTED);
+#elif defined(ARDUINO_ARCH_ESP8266)
   wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
   wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
-  
-  //mqttClient.setClientId("clientID");
+#endif
+
   mqttClient.setCredentials(mqttUser,mqttPassword);
   mqttClient.setCleanSession(false);
   mqttClient.onConnect(onMqttConnect);

@@ -1,19 +1,21 @@
 #include <FS.h>                   //this needs to be first, or it all crashes and burns...
-#include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
+#ifdef ARDUINO_ARCH_ESP32
+  #include <SPIFFS.h>
+  #include <WiFi.h> 
+  #include <WebServer.h>
+  #include <AsyncTCP.h>
+#elif defined(ARDUINO_ARCH_ESP8266) 
+  #include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
+  #include <ESP8266WebServer.h>
+  #include <ESPAsyncTCP.h>
+#endif
 
 //needed for WiFi
 #include <DNSServer.h>
-#include <ESP8266WebServer.h>
 #include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager
 
 //needed for mqtt
 #include <AsyncMqttClient.h>
-#include <ESPAsyncTCP.h>
-#include <tcp_axtls.h>
-#include <async_config.h>
-#include <AsyncPrinter.h>
-#include <ESPAsyncTCPbuffer.h>
-#include <SyncClient.h>
 #include <Ticker.h>
 
 // needed to upload sketches over the air
@@ -27,7 +29,11 @@
 // LED Config
 //#################
 #include "Balls.h"
-#define PIN D1                    // PIN the LED Stripe is connected to
+#ifdef ARDUINO_ARCH_ESP32
+  #define PIN 13
+#elif defined(ARDUINO_ARCH_ESP8266)
+  #define PIN D1                    // PIN the LED Stripe is connected to
+#endif
 #define nBalls 3                  // number of balls for balls program
 int NUMPIXELS = 150;              // Amount of LEDs
 Adafruit_NeoPixel pixels;         // cannot be initialized until parameters are loaded by WiFiManager
