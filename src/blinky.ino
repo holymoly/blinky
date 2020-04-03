@@ -40,6 +40,7 @@
 #include "Balls.h"
 #ifdef ARDUINO_ARCH_ESP32
   #define PIN 13
+  #define FORMAT_SPIFFS_IF_FAILED true
 #elif defined(ARDUINO_ARCH_ESP8266)
   #define PIN D1                    // PIN the LED Stripe is connected to
 #endif                // PIN the LED Stripe is connected to
@@ -82,7 +83,12 @@ void setup() {
   //clean FS, for testing
   //SPIFFS.format();
 
+
+#ifdef ARDUINO_ARCH_ESP32
+  if (SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)) {
+#elif defined(ARDUINO_ARCH_ESP8266)
   if (SPIFFS.begin()) {
+#endif
     Serial.println("mounted file system");
   } else {
     Serial.println("failed to mount FS");
