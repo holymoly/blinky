@@ -1,20 +1,31 @@
 #include <FS.h>                   //this needs to be first, or it all crashes and burns...
-#include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
+
+#ifdef ARDUINO_ARCH_ESP32
+  #include <SPIFFS.h>
+  #include <WebServer.h>
+  #include <AsyncTCP.h>
+  //needed for mqtt
+  #include <AsyncMqttClient.h>
+  #include <Ticker.h>
+#elif defined(ARDUINO_ARCH_ESP8266) 
+  #include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
+  #include <ESP8266WebServer.h>
+  #include <ESPAsyncTCP.h>
+
+  //needed for mqtt
+  #include <AsyncMqttClient.h>
+  #include <tcp_axtls.h>
+  #include <async_config.h>
+  #include <AsyncPrinter.h>
+  #include <ESPAsyncTCPbuffer.h>
+  #include <SyncClient.h>
+  #include <Ticker.h>
+#endif
+
 
 //needed for WiFi
 #include <DNSServer.h>
-#include <ESP8266WebServer.h>
 #include <WiFiManager.h>          //https://github.com/tzapu/WiFiManager
-
-//needed for mqtt
-#include <AsyncMqttClient.h>
-#include <ESPAsyncTCP.h>
-#include <tcp_axtls.h>
-#include <async_config.h>
-#include <AsyncPrinter.h>
-#include <ESPAsyncTCPbuffer.h>
-#include <SyncClient.h>
-#include <Ticker.h>
 
 // needed to upload sketches over the air
 #include <ArduinoOTA.h>
@@ -27,8 +38,12 @@
 // LED Config
 //#################
 #include "Balls.h"
-#define PIN D1                    // PIN the LED Stripe is connected to
-#define NUMPIXELS 27             // Amount of LEDs
+#ifdef ARDUINO_ARCH_ESP32
+  #define PIN 13
+#elif defined(ARDUINO_ARCH_ESP8266)
+  #define PIN D1                    // PIN the LED Stripe is connected to
+#endif                // PIN the LED Stripe is connected to
+#define NUMPIXELS 27*4            // Amount of LEDs
 #define nBalls 3                  // number of balls for balls program
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 Balls balls[nBalls];
