@@ -53,13 +53,13 @@ if (SPIFFS.exists("/config.json")) {
   // The extra parameters to be configured (can be either global or just in the setup)
   // After connecting, parameter.getValue() will get you the configured value
   // id/name placeholder/prompt default length
-  WiFiManagerParameter customMqttServer("server", "mqtt server", mqttServer, 40);
-  WiFiManagerParameter customMqttPort("port", "mqtt port", mqttPort, 6);
-  WiFiManagerParameter customMqttUser("User", "mqtt user", mqttUser, 40);
-  WiFiManagerParameter customMqttPassword("Password", "mqtt pasword", mqttPassword, 40);
-  WiFiManagerParameter customMqttNodeName("NodeName", "node name", mqttNodeName, 12);  
-  WiFiManagerParameter customMqttRoomName("RoomName", "room name", mqttRoomName, 12);  
-  WiFiManagerParameter customMqttDeviceType("DeviceType", "device type", mqttDeviceType, 12);  
+  WiFiManagerParameter customMqttServer("server", "mqtt server", mqttServer, 50, "size='50'");
+  WiFiManagerParameter customMqttPort("port", "mqtt port", mqttPort, 6, "size='6'");
+  WiFiManagerParameter customMqttUser("User", "mqtt user", mqttUser, 40, "size='40'");
+  WiFiManagerParameter customMqttPassword("Password", "mqtt pasword", mqttPassword, 40, " type='password' size='40'");
+  WiFiManagerParameter customMqttNodeName("NodeName", "node name", mqttNodeName, 12,"size='12'");  
+  WiFiManagerParameter customMqttRoomName("RoomName", "room name", mqttRoomName, 12,"size='12'");  
+  WiFiManagerParameter customMqttDeviceType("DeviceType", "device type", mqttDeviceType, 12, "size='12'");  
   
   WiFiManager wifiManager;      //Initialize the WiFi Manager
   wifiManager.setTimeout(600);  // If not configured in 10min reset ESP. Usefull after Powercut

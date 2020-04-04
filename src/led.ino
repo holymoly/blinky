@@ -147,3 +147,18 @@ uint32_t Wheel(byte WheelPos)
     return pixels.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
   }
 }
+
+void initBalls(){
+  for(int i = 0; i <= nBalls-1; i++){
+    balls[i].positionHoldPeriod = random(10, 50);
+    balls[i].red = random(0, 150);
+    balls[i].green = random(0, 150);
+    balls[i].blue = random(0, 150);
+    balls[i].startPosition = 1;
+    balls[i].endPosition = pixels.numPixels();
+    balls[i].actPosition = random(1, pixels.numPixels());
+    balls[i].direction = random(0, 1);
+    balls[i].speed = random(3, 10);
+    balls[i].gravitation = 10;
+  }
+}

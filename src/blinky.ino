@@ -42,10 +42,10 @@
   #define PIN 13
   #define FORMAT_SPIFFS_IF_FAILED true
 #elif defined(ARDUINO_ARCH_ESP8266)
-  #define PIN D1                    // PIN the LED Stripe is connected to
-#endif                // PIN the LED Stripe is connected to
+  #define PIN D1                  // PIN the LED Stripe is connected to
+#endif                            // PIN the LED Stripe is connected to
 #define NUMPIXELS 27*4            // Amount of LEDs
-#define nBalls 3                  // number of balls for balls program
+#define nBalls 8                  // number of balls for balls program
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 Balls balls[nBalls];
 
@@ -63,18 +63,7 @@ void setup() {
   
   //### LED Setup ###
   pinMode(PIN, OUTPUT);
-  for(int i = 0; i <= nBalls-1; i++){
-    balls[i].positionHoldPeriod = random(10, 50);
-    balls[i].red = random(0, 150);
-    balls[i].green = random(0, 150);
-    balls[i].blue = random(0, 150);
-    balls[i].startPosition = 1;
-    balls[i].endPosition = pixels.numPixels();
-    balls[i].actPosition = random(1, pixels.numPixels());
-    balls[i].direction = random(0, 1);
-    balls[i].speed = random(3, 10);
-    balls[i].gravitation = 10;
-  }
+  initBalls();
   //##################
 
   pinMode(2, OUTPUT);             // Initialize the LED_BUILTIN pin as an output
