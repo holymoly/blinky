@@ -51,7 +51,7 @@ Balls balls[nBalls];
 
 AsyncMqttClient mqttClient;
 
-long triggerTime;
+unsigned long triggerTime;
 
 bool ledState = false;
 
@@ -104,7 +104,7 @@ void loop() {
   if(triggerTime < millis()){
     digitalWrite(2, LOW);
     triggerTime = millis() + 1000;
-    mqttDebug("peter du lappen",0);
+    mqttDebug((char *)"peter du lappen",0);
   } else {
     digitalWrite(2, HIGH);
   }

@@ -8,14 +8,14 @@ typedef enum {
   KIT
   } ledProgram_type;
 
-ledProgram_type activeProgram = RAINBOW;
+ledProgram_type activeProgram = BLINK;
 
 // initial colors
 int red = 500;
 int green = 50;
 int blue = 50;
 
-long cycleTime;
+unsigned long cycleTime;
 
 uint16_t rainbowIndex = 0;
 
@@ -36,7 +36,7 @@ void setLeds(){
         dimByFactorCycle(0.999, 0);
         
         // init Balls
-        for(int i = 0; i <= nBalls; i++){
+        for(int i = 0; i <= nBalls-1; i++){
           pixels.setPixelColor(balls[i].moveTimeBased(), pixels.Color(balls[i].red, balls[i].green, balls[i].blue));
         }
       }
@@ -112,7 +112,7 @@ void setLeds(){
   }
 }
 
-long nextDimTime = millis(); //inits nextDimTime dimByFactorCycle will be executed on first call
+unsigned long nextDimTime = millis(); //inits nextDimTime dimByFactorCycle will be executed on first call
 // dims all Leds by the factor if last dim was more than dimDiffTime ago
 void dimByFactorCycle(float fadeFactor, int dimDiffTime){
   if(nextDimTime < millis()){

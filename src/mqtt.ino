@@ -39,7 +39,7 @@ void connectToMqtt() {
 
 void onMqttConnect(bool sessionPresent) {
   char topic[300]; // buffer for storing topics
-  
+
   Serial.println("Connected to MQTT.");
   Serial.print("Session present: ");
   Serial.println(sessionPresent);
@@ -83,12 +83,12 @@ void onMqttConnect(bool sessionPresent) {
     // this message will be send by the broker if the node has disconnected ungracefully
     mqttLwt(topic, 2);
   }
-  
+
   StaticJsonDocument<50> doc;
   char jsonString[50];
 
   doc["state"] = "node connected";
-  
+
   serializeJson(doc, jsonString);
 
   mqttClient.publish(mqttNodeName, 0, true, jsonString);
@@ -134,25 +134,23 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
     if (err) {
         Serial.print(F("deserializeJson() failed: "));
         Serial.println(err.c_str());
-    }
+    }else{
+      serializeJson(doc, Serial);
 
-    serializeJson(doc, Serial);
+      // check if type is cmd
+      if(strcmp(doc["type"].as<char *>(), "cmd") == 0){
+        Serial.println("Command received");
+        parseMqttCommand(doc);
+      }
 
-    // check if type is cmd
-    if(strcmp(doc["type"].as<char *>(), "cmd") == 0){
-      Serial.println("Command received");
-      
-      parseMqttCommand(doc);
-    }
-
-    // check if type is req
-    if(strcmp(doc["type"].as<char *>(), "req") == 0){
-      Serial.println("Request received");
- 
-      parseMqttRequest(doc);
+      // check if type is req
+      if(strcmp(doc["type"].as<char *>(), "req") == 0){
+        Serial.println("Request received");
+        parseMqttRequest(doc);
+      }
     }
   }
-  
+
   Serial.println("Publish received.");
   Serial.print("  topic: ");
   Serial.println(topic);
@@ -179,8 +177,8 @@ void onMqttPublish(uint16_t packetId) {
 }
 
 void mqttInit(){
-  uint16_t port;
-  
+  int port;
+
   #ifdef ARDUINO_ARCH_ESP32
     WiFi.onEvent(onWifiConnect, SYSTEM_EVENT_STA_GOT_IP);
     WiFi.onEvent(onWifiDisconnect, SYSTEM_EVENT_STA_DISCONNECTED);

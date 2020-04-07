@@ -3,7 +3,7 @@ class Balls {
       int actPosition;   
       int startPosition;
       int endPosition;
-      int positionHoldPeriod;
+      uint positionHoldPeriod;
       int speed;
       int gravitation;
       byte red;
